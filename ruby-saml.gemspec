@@ -2,7 +2,7 @@ $LOAD_PATH.push File.expand_path('../lib', __FILE__)
 require 'james/ruby-saml/version'
 
 Gem::Specification.new do |s|
-  s.name = 'ruby-saml'
+  s.name = 'james-ruby-saml'
   s.version = James::RubySaml::VERSION
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
