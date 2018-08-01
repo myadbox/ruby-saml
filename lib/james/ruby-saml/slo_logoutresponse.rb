@@ -1,8 +1,8 @@
 require "uuid"
 
-require "onelogin/ruby-saml/logging"
+require "james/ruby-saml/logging"
 
-module OneLogin
+module James
   module RubySaml
     class SloLogoutresponse < SamlMessage
 

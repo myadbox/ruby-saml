@@ -3,7 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), "test_helper"))
 class MetadataTest < Test::Unit::TestCase
 
   def setup
-    @settings = OneLogin::RubySaml::Settings.new
+    @settings = James::RubySaml::Settings.new
     @settings.issuer = "https://example.com"
     @settings.name_identifier_format = "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
     @settings.assertion_consumer_service_url = "https://foo.example/saml/consume"
@@ -14,7 +14,7 @@ class MetadataTest < Test::Unit::TestCase
     @settings.security[:authn_requests_signed] = true
     @settings.certificate = ruby_saml_cert_text
 
-    xml_text = OneLogin::RubySaml::Metadata.new.generate(@settings)
+    xml_text = James::RubySaml::Metadata.new.generate(@settings)
 
     # assert xml_text can be parsed into an xml doc
     xml_doc = REXML::Document.new(xml_text)
@@ -32,13 +32,13 @@ class MetadataTest < Test::Unit::TestCase
   end
 
   should "should generate Service Provider Metadata" do
-    settings = OneLogin::RubySaml::Settings.new
+    settings = James::RubySaml::Settings.new
     settings.issuer = "https://example.com"
     settings.name_identifier_format = "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
     settings.assertion_consumer_service_url = "https://foo.example/saml/consume"
     settings.security[:authn_requests_signed] = false
 
-    xml_text = OneLogin::RubySaml::Metadata.new.generate(settings)
+    xml_text = James::RubySaml::Metadata.new.generate(settings)
 
     # assert correct xml declaration
     start = "<?xml version='1.0' encoding='UTF-8'?>\n<md:EntityDescriptor"
@@ -62,7 +62,7 @@ class MetadataTest < Test::Unit::TestCase
   end
 
   should "generate attribute service if configured" do
-    settings = OneLogin::RubySaml::Settings.new
+    settings = James::RubySaml::Settings.new
     settings.issuer = "https://example.com"
     settings.name_identifier_format = "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
     settings.assertion_consumer_service_url = "https://foo.example/saml/consume"
@@ -71,7 +71,7 @@ class MetadataTest < Test::Unit::TestCase
       add_attribute(:name => "Name", :name_format => "Name Format", :friendly_name => "Friendly Name", :attribute_value => "Attribute Value")
     end
 
-    xml_text = OneLogin::RubySaml::Metadata.new.generate(settings)
+    xml_text = James::RubySaml::Metadata.new.generate(settings)
     xml_doc = REXML::Document.new(xml_text)
     acs = REXML::XPath.first(xml_doc, "//md:AttributeConsumingService")
     assert_equal "true", acs.attribute("isDefault").value

@@ -4,7 +4,7 @@ require 'base64'
 require "rexml/document"
 require "rexml/xpath"
 
-module OneLogin
+module James
   module RubySaml
     class SamlMessage
       include REXML

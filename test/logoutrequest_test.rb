@@ -3,13 +3,13 @@ require File.expand_path(File.join(File.dirname(__FILE__), "test_helper"))
 class RequestTest < Test::Unit::TestCase
 
   context "Logoutrequest" do
-    settings = OneLogin::RubySaml::Settings.new
+    settings = James::RubySaml::Settings.new
 
     should "create the deflated SAMLRequest URL parameter" do
       settings.idp_slo_target_url = "http://unauth.com/logout"
       settings.name_identifier_value = "f00f00"
 
-      unauth_url = OneLogin::RubySaml::Logoutrequest.new.create(settings)
+      unauth_url = James::RubySaml::Logoutrequest.new.create(settings)
       assert unauth_url =~ /^http:\/\/unauth\.com\/logout\?SAMLRequest=/
 
       inflated = decode_saml_request_payload(unauth_url)
@@ -19,10 +19,10 @@ class RequestTest < Test::Unit::TestCase
 
     should "support additional params" do
 
-      unauth_url = OneLogin::RubySaml::Logoutrequest.new.create(settings, { :hello => nil })
+      unauth_url = James::RubySaml::Logoutrequest.new.create(settings, { :hello => nil })
       assert unauth_url =~ /&hello=$/
 
-      unauth_url = OneLogin::RubySaml::Logoutrequest.new.create(settings, { :foo => "bar" })
+      unauth_url = James::RubySaml::Logoutrequest.new.create(settings, { :foo => "bar" })
       assert unauth_url =~ /&foo=bar$/
     end
 
@@ -31,7 +31,7 @@ class RequestTest < Test::Unit::TestCase
       sessionidx = UUID.new.generate
       settings.sessionindex = sessionidx
 
-      unauth_url = OneLogin::RubySaml::Logoutrequest.new.create(settings, { :name_id => "there" })
+      unauth_url = James::RubySaml::Logoutrequest.new.create(settings, { :name_id => "there" })
       inflated = decode_saml_request_payload(unauth_url)
 
       assert_match /<samlp:SessionIndex/, inflated
@@ -39,13 +39,13 @@ class RequestTest < Test::Unit::TestCase
     end
 
     should "set name_identifier_value" do
-      settings = OneLogin::RubySaml::Settings.new
+      settings = James::RubySaml::Settings.new
       settings.idp_slo_target_url = "http://example.com"
       settings.name_identifier_format = "transient"
       name_identifier_value = "abc123"
       settings.name_identifier_value = name_identifier_value
 
-      unauth_url = OneLogin::RubySaml::Logoutrequest.new.create(settings, { :name_id => "there" })
+      unauth_url = James::RubySaml::Logoutrequest.new.create(settings, { :name_id => "there" })
       inflated = decode_saml_request_payload(unauth_url)
 
       assert_match /<saml:NameID/, inflated
@@ -54,33 +54,33 @@ class RequestTest < Test::Unit::TestCase
 
     context "when the target url doesn't contain a query string" do
       should "create the SAMLRequest parameter correctly" do
-        settings = OneLogin::RubySaml::Settings.new
+        settings = James::RubySaml::Settings.new
         settings.idp_slo_target_url = "http://example.com"
         settings.name_identifier_value = "f00f00"
 
-        unauth_url = OneLogin::RubySaml::Logoutrequest.new.create(settings)
+        unauth_url = James::RubySaml::Logoutrequest.new.create(settings)
         assert unauth_url =~ /^http:\/\/example.com\?SAMLRequest/
       end
     end
 
     context "when the target url contains a query string" do
       should "create the SAMLRequest parameter correctly" do
-        settings = OneLogin::RubySaml::Settings.new
+        settings = James::RubySaml::Settings.new
         settings.idp_slo_target_url = "http://example.com?field=value"
         settings.name_identifier_value = "f00f00"
 
-        unauth_url = OneLogin::RubySaml::Logoutrequest.new.create(settings)
+        unauth_url = James::RubySaml::Logoutrequest.new.create(settings)
         assert unauth_url =~ /^http:\/\/example.com\?field=value&SAMLRequest/
       end
     end
 
     context "consumation of logout may need to track the transaction" do
       should "have access to the request uuid" do
-        settings = OneLogin::RubySaml::Settings.new
+        settings = James::RubySaml::Settings.new
         settings.idp_slo_target_url = "http://example.com?field=value"
         settings.name_identifier_value = "f00f00"
 
-        unauth_req = OneLogin::RubySaml::Logoutrequest.new
+        unauth_req = James::RubySaml::Logoutrequest.new
         unauth_url = unauth_req.create(settings)
 
         inflated = decode_saml_request_payload(unauth_url)
@@ -90,7 +90,7 @@ class RequestTest < Test::Unit::TestCase
 
     context "when the settings indicate to sign (embebed) the logout request" do
       should "created a signed logout request" do
-        settings = OneLogin::RubySaml::Settings.new
+        settings = James::RubySaml::Settings.new
         settings.idp_slo_target_url = "http://example.com?field=value"
         settings.name_identifier_value = "f00f00"
         # sign the logout request
@@ -99,7 +99,7 @@ class RequestTest < Test::Unit::TestCase
         settings.certificate = ruby_saml_cert_text
         settings.private_key = ruby_saml_key_text
 
-        unauth_req = OneLogin::RubySaml::Logoutrequest.new
+        unauth_req = James::RubySaml::Logoutrequest.new
         unauth_url = unauth_req.create(settings)
 
         inflated = decode_saml_request_payload(unauth_url)
@@ -107,7 +107,7 @@ class RequestTest < Test::Unit::TestCase
       end
 
       should "create a signed logout request with 256 digest and signature methods" do
-        settings = OneLogin::RubySaml::Settings.new
+        settings = James::RubySaml::Settings.new
         settings.compress_request = false
         settings.idp_slo_target_url = "http://example.com?field=value"
         settings.name_identifier_value = "f00f00"
@@ -119,7 +119,7 @@ class RequestTest < Test::Unit::TestCase
         settings.certificate  = ruby_saml_cert_text
         settings.private_key = ruby_saml_key_text
 
-        params = OneLogin::RubySaml::Logoutrequest.new.create_params(settings)
+        params = James::RubySaml::Logoutrequest.new.create_params(settings)
         request_xml = Base64.decode64(params["SAMLRequest"])
 
         assert_match %r[<ds:SignatureValue>([a-zA-Z0-9/+=]+)</ds:SignatureValue>], request_xml
@@ -130,7 +130,7 @@ class RequestTest < Test::Unit::TestCase
 
     context "when the settings indicate to sign the logout request" do
       should "create a signature parameter" do
-        settings = OneLogin::RubySaml::Settings.new
+        settings = James::RubySaml::Settings.new
         settings.compress_request = false
         settings.idp_slo_target_url = "http://example.com?field=value"
         settings.name_identifier_value = "f00f00"
@@ -140,13 +140,13 @@ class RequestTest < Test::Unit::TestCase
         settings.certificate  = ruby_saml_cert_text
         settings.private_key = ruby_saml_key_text
 
-        params = OneLogin::RubySaml::Logoutrequest.new.create_params(settings)
+        params = James::RubySaml::Logoutrequest.new.create_params(settings)
         assert params['Signature']
         assert params['SigAlg'] == XMLSecurity::Document::SHA1
 
         # signature_method only affects the embedeed signature
         settings.security[:signature_method] = XMLSecurity::Document::SHA256
-        params = OneLogin::RubySaml::Logoutrequest.new.create_params(settings)
+        params = James::RubySaml::Logoutrequest.new.create_params(settings)
         assert params['Signature']
         assert params['SigAlg'] == XMLSecurity::Document::SHA1
       end

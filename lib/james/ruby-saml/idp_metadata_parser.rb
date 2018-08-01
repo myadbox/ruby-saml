@@ -5,7 +5,7 @@ require "cgi"
 require "rexml/document"
 require "rexml/xpath"
 
-module OneLogin
+module James
   module RubySaml
     include REXML
 
@@ -24,7 +24,7 @@ module OneLogin
       def parse(idp_metadata)
         @document = REXML::Document.new(idp_metadata)
 
-        OneLogin::RubySaml::Settings.new.tap do |settings|
+        James::RubySaml::Settings.new.tap do |settings|
 
           settings.idp_sso_target_url = single_signon_service_url
           settings.idp_slo_target_url = single_logout_service_url

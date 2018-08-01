@@ -10,7 +10,7 @@ class IdpMetadataParserTest < Test::Unit::TestCase
 
   context "parsing an IdP descriptor file" do
     should "extract settings details from xml" do
-      idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
+      idp_metadata_parser = James::RubySaml::IdpMetadataParser.new
 
       settings = idp_metadata_parser.parse(idp_metadata)
 
@@ -34,7 +34,7 @@ class IdpMetadataParserTest < Test::Unit::TestCase
 
 
     should "extract settings from remote xml" do
-      idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
+      idp_metadata_parser = James::RubySaml::IdpMetadataParser.new
       settings = idp_metadata_parser.parse_remote(@url)
 
       assert_equal "https://example.hello.com/access/saml/login", settings.idp_sso_target_url
@@ -44,7 +44,7 @@ class IdpMetadataParserTest < Test::Unit::TestCase
     end
 
     should "accept self signed certificate if insturcted" do
-      idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
+      idp_metadata_parser = James::RubySaml::IdpMetadataParser.new
       settings = idp_metadata_parser.parse_remote(@url, false)
 
       assert_equal OpenSSL::SSL::VERIFY_NONE, @http.verify_mode

@@ -1,4 +1,4 @@
-module OneLogin
+module James
   module RubySaml
     class Utils
       def self.format_cert(cert, heads=true)

@@ -3,7 +3,7 @@ require "time"
 require "nokogiri"
 
 # Only supports SAML 2.0
-module OneLogin
+module James
   module RubySaml
 
     class Response < SamlMessage
@@ -54,7 +54,7 @@ module OneLogin
         end
       end
 
-      # Returns OneLogin::RubySaml::Attributes enumerable collection.
+      # Returns James::RubySaml::Attributes enumerable collection.
       # All attributes can be iterated over +attributes.each+ or returned as array by +attributes.all+
       #
       # For backwards compatibility ruby-saml returns by default only the first value for a given attribute with
@@ -62,7 +62,7 @@ module OneLogin
       # To get all of the attributes, use:
       #    attributes.multi('name')
       # Or turn off the compatibility:
-      #    OneLogin::RubySaml::Attributes.single_value_compatibility = false
+      #    James::RubySaml::Attributes.single_value_compatibility = false
       # Now this will return an array:
       #    attributes['name']
       def attributes

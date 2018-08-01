@@ -1,7 +1,7 @@
-module OneLogin
+module James
   module RubySaml
     # Wraps all attributes and provides means to query them for single or multiple values.
-    # 
+    #
     # For backwards compatibility Attributes#[] returns *first* value for the attribute.
     # Turn off compatibility to make it return all values as an array:
     #    Attributes.single_value_compatibility = false
@@ -44,7 +44,7 @@ module OneLogin
       def include?(name)
         attributes.has_key?(canonize_name(name))
       end
-      
+
       # Return first value for an attribute
       def single(name)
         attributes[canonize_name(name)].first if include?(name)

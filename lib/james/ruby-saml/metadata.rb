@@ -2,13 +2,13 @@ require "rexml/document"
 require "rexml/xpath"
 require "uri"
 
-require "onelogin/ruby-saml/logging"
+require "james/ruby-saml/logging"
 
 # Class to return SP metadata based on the settings requested.
 # Return this XML in a controller, then give that URL to the the
 # IdP administrator.  The IdP will poll the URL and your settings
 # will be updated automatically
-module OneLogin
+module James
   module RubySaml
     include REXML
     class Metadata
@@ -61,7 +61,7 @@ module OneLogin
         if settings.attribute_consuming_service.configured?
           sp_acs = sp_sso.add_element "md:AttributeConsumingService", {
             "isDefault" => "true",
-            "index" => settings.attribute_consuming_service.index 
+            "index" => settings.attribute_consuming_service.index
           }
           srv_name = sp_acs.add_element "md:ServiceName", {
             "xml:lang" => "en"
@@ -70,7 +70,7 @@ module OneLogin
           settings.attribute_consuming_service.attributes.each do |attribute|
             sp_req_attr = sp_acs.add_element "md:RequestedAttribute", {
               "NameFormat" => attribute[:name_format],
-              "Name" => attribute[:name], 
+              "Name" => attribute[:name],
               "FriendlyName" => attribute[:friendly_name]
             }
             unless attribute[:attribute_value].nil?

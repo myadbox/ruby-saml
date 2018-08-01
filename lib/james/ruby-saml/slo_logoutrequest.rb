@@ -3,7 +3,7 @@ require 'time'
 require 'nokogiri'
 
 # Only supports SAML 2.0
-module OneLogin
+module James
   module RubySaml
     class SloLogoutrequest < SamlMessage
       attr_reader :options

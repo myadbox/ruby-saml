@@ -4,7 +4,7 @@ class SettingsTest < Test::Unit::TestCase
 
   context "Settings" do
     setup do
-      @settings = OneLogin::RubySaml::Settings.new
+      @settings = James::RubySaml::Settings.new
     end
     should "should provide getters and settings" do
       accessors = [
@@ -42,7 +42,7 @@ class SettingsTest < Test::Unit::TestCase
           :passive => true,
           :protocol_binding => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'
       }
-      @settings = OneLogin::RubySaml::Settings.new(config)
+      @settings = James::RubySaml::Settings.new(config)
 
       config.each do |k,v|
         assert_equal v, @settings.send(k)
@@ -50,10 +50,10 @@ class SettingsTest < Test::Unit::TestCase
     end
 
     should "configure attribute service attributes correctly" do
-      @settings = OneLogin::RubySaml::Settings.new
+      @settings = James::RubySaml::Settings.new
       @settings.attribute_consuming_service.configure do
         service_name "Test Service"
-        add_attribute :name => "Name", :name_format => "Name Format", :friendly_name => "Friendly Name" 
+        add_attribute :name => "Name", :name_format => "Name Format", :friendly_name => "Friendly Name"
       end
 
       assert_equal @settings.attribute_consuming_service.configured?, true
