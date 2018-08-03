@@ -40,12 +40,12 @@ module James
         response_params = {"SAMLResponse" => base64_response}
 
         if settings.security[:logout_responses_signed] && !settings.security[:embed_sign] && settings.private_key
-          params['SigAlg']    = JamesXMLSecurity::Document::SHA1
+          params['SigAlg']    = JamesXmlSecurity::Document::SHA1
           url_string          = "SAMLResponse=#{CGI.escape(base64_response)}"
           url_string         += "&RelayState=#{CGI.escape(params['RelayState'])}" if params['RelayState']
           url_string         += "&SigAlg=#{CGI.escape(params['SigAlg'])}"
           private_key         = settings.get_sp_key()
-          signature           = private_key.sign(JamesXMLSecurity::BaseDocument.new.algorithm(settings.security[:signature_method]).new, url_string)
+          signature           = private_key.sign(JamesXmlSecurity::BaseDocument.new.algorithm(settings.security[:signature_method]).new, url_string)
           params['Signature'] = encode(signature)
         end
 
@@ -59,7 +59,7 @@ module James
       def create_logout_response_xml_doc(settings, request_id = nil, logout_message = nil)
         time = Time.now.utc.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-        response_doc = JamesXMLSecurity::Document.new
+        response_doc = JamesXmlSecurity::Document.new
         response_doc.uuid = uuid
 
         root = response_doc.add_element 'samlp:LogoutResponse', { 'xmlns:samlp' => 'urn:oasis:names:tc:SAML:2.0:protocol', "xmlns:saml" => "urn:oasis:names:tc:SAML:2.0:assertion" }

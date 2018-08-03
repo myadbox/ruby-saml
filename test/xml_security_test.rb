@@ -1,12 +1,12 @@
 require 'test_helper'
 require 'xml_security'
 
-class JamesXMLSecurityTest < Test::Unit::TestCase
-  include JamesXMLSecurity
+class JamesXmlSecurityTest < Test::Unit::TestCase
+  include JamesXmlSecurity
 
-  context "JamesXMLSecurity" do
+  context "JamesXmlSecurity" do
     setup do
-      @document = JamesXMLSecurity::SignedDocument.new(Base64.decode64(response_document))
+      @document = JamesXmlSecurity::SignedDocument.new(Base64.decode64(response_document))
       @base64cert = @document.elements["//ds:X509Certificate"].text
     end
 
@@ -29,7 +29,7 @@ class JamesXMLSecurityTest < Test::Unit::TestCase
     should "not raise an error when softly validating the document and the X509Certificate is missing" do
       response = Base64.decode64(response_document)
       response.sub!(/<ds:X509Certificate>.*<\/ds:X509Certificate>/, "")
-      document = JamesXMLSecurity::SignedDocument.new(response)
+      document = JamesXmlSecurity::SignedDocument.new(response)
       assert_nothing_raised do
         assert !document.validate_document("a fingerprint", true) # The fingerprint isn't relevant to this test
       end
@@ -55,7 +55,7 @@ class JamesXMLSecurityTest < Test::Unit::TestCase
       response = Base64.decode64(response_document)
       response.sub!("<ds:DigestValue>pJQ7MS/ek4KRRWGmv/H43ReHYMs=</ds:DigestValue>",
                     "<ds:DigestValue>b9xsAXLsynugg3Wc1CI3kpWku+0=</ds:DigestValue>")
-      document = JamesXMLSecurity::SignedDocument.new(response)
+      document = JamesXmlSecurity::SignedDocument.new(response)
       base64cert = document.elements["//ds:X509Certificate"].text
       exception = assert_raise(James::RubySaml::ValidationError) do
         document.validate_signature(base64cert, false)
@@ -65,7 +65,7 @@ class JamesXMLSecurityTest < Test::Unit::TestCase
     end
 
     should "correctly obtain the digest method with alternate namespace declaration" do
-      document = JamesXMLSecurity::SignedDocument.new(fixture(:adfs_response_xmlns, false))
+      document = JamesXmlSecurity::SignedDocument.new(fixture(:adfs_response_xmlns, false))
       base64cert = document.elements["//X509Certificate"].text
       assert document.validate_signature(base64cert, false)
     end
@@ -73,7 +73,7 @@ class JamesXMLSecurityTest < Test::Unit::TestCase
     should "raise validation error when the X509Certificate is missing" do
       response = Base64.decode64(response_document)
       response.sub!(/<ds:X509Certificate>.*<\/ds:X509Certificate>/, "")
-      document = JamesXMLSecurity::SignedDocument.new(response)
+      document = JamesXmlSecurity::SignedDocument.new(response)
       exception = assert_raise(James::RubySaml::ValidationError) do
         document.validate_document("a fingerprint", false) # The fingerprint isn't relevant to this test
       end
@@ -83,32 +83,32 @@ class JamesXMLSecurityTest < Test::Unit::TestCase
 
   context "Algorithms" do
     should "validate using SHA1" do
-      @document = JamesXMLSecurity::SignedDocument.new(fixture(:adfs_response_sha1, false))
+      @document = JamesXmlSecurity::SignedDocument.new(fixture(:adfs_response_sha1, false))
       assert @document.validate_document("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72")
     end
 
     should "validate using SHA256" do
-      @document = JamesXMLSecurity::SignedDocument.new(fixture(:adfs_response_sha256, false))
+      @document = JamesXmlSecurity::SignedDocument.new(fixture(:adfs_response_sha256, false))
       assert @document.validate_document("28:74:9B:E8:1F:E8:10:9C:A8:7C:A9:C3:E3:C5:01:6C:92:1C:B4:BA")
     end
 
     should "validate using SHA384" do
-      @document = JamesXMLSecurity::SignedDocument.new(fixture(:adfs_response_sha384, false))
+      @document = JamesXmlSecurity::SignedDocument.new(fixture(:adfs_response_sha384, false))
       assert @document.validate_document("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72")
     end
 
     should "validate using SHA512" do
-      @document = JamesXMLSecurity::SignedDocument.new(fixture(:adfs_response_sha512, false))
+      @document = JamesXmlSecurity::SignedDocument.new(fixture(:adfs_response_sha512, false))
       assert @document.validate_document("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72")
     end
   end
 
-  context "JamesXMLSecurity::SignedDocument" do
+  context "JamesXmlSecurity::SignedDocument" do
 
     context "#extract_inclusive_namespaces" do
       should "support explicit namespace resolution for exclusive canonicalization" do
         response = fixture(:open_saml_response, false)
-        document = JamesXMLSecurity::SignedDocument.new(response)
+        document = JamesXmlSecurity::SignedDocument.new(response)
         inclusive_namespaces = document.send(:extract_inclusive_namespaces)
 
         assert_equal %w[ xs ], inclusive_namespaces
@@ -116,7 +116,7 @@ class JamesXMLSecurityTest < Test::Unit::TestCase
 
       should "support implicit namespace resolution for exclusive canonicalization" do
         response = fixture(:no_signature_ns, false)
-        document = JamesXMLSecurity::SignedDocument.new(response)
+        document = JamesXmlSecurity::SignedDocument.new(response)
         inclusive_namespaces = document.send(:extract_inclusive_namespaces)
 
         assert_equal %w[ #default saml ds xs xsi ], inclusive_namespaces
@@ -139,14 +139,14 @@ class JamesXMLSecurityTest < Test::Unit::TestCase
         response = fixture(:no_signature_ns, false)
         response.slice! %r{<InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default saml ds xs xsi"/>}
 
-        document = JamesXMLSecurity::SignedDocument.new(response)
+        document = JamesXmlSecurity::SignedDocument.new(response)
         inclusive_namespaces = document.send(:extract_inclusive_namespaces)
 
         assert inclusive_namespaces.empty?
       end
     end
 
-    context "JamesXMLSecurity::DSIG" do
+    context "JamesXmlSecurity::DSIG" do
       should "sign a AuthNRequest" do
         settings = James::RubySaml::Settings.new({
           :idp_sso_target_url => "https://idp.example.com/sso",
@@ -159,7 +159,7 @@ class JamesXMLSecurityTest < Test::Unit::TestCase
         request.sign_document(ruby_saml_key, ruby_saml_cert)
 
         # verify our signature
-        signed_doc = JamesXMLSecurity::SignedDocument.new(request.to_s)
+        signed_doc = JamesXmlSecurity::SignedDocument.new(request.to_s)
         signed_doc.validate_document(ruby_saml_cert_fingerprint, false)
       end
 
@@ -175,7 +175,7 @@ class JamesXMLSecurityTest < Test::Unit::TestCase
         request.sign_document(ruby_saml_key, ruby_saml_cert)
 
         # verify our signature
-        signed_doc = JamesXMLSecurity::SignedDocument.new(request.to_s)
+        signed_doc = JamesXmlSecurity::SignedDocument.new(request.to_s)
         signed_doc.validate_document(ruby_saml_cert_fingerprint, false)
       end
 
@@ -191,7 +191,7 @@ class JamesXMLSecurityTest < Test::Unit::TestCase
         response.sign_document(ruby_saml_key, ruby_saml_cert)
 
         # verify our signature
-        signed_doc = JamesXMLSecurity::SignedDocument.new(response.to_s)
+        signed_doc = JamesXmlSecurity::SignedDocument.new(response.to_s)
         signed_doc.validate_document(ruby_saml_cert_fingerprint, false)
       end
     end

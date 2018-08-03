@@ -24,7 +24,7 @@ module James
         raise ArgumentError.new("Response cannot be nil") if response.nil?
         @options  = options
         @response = decode_raw_saml(response)
-        @document = JamesXMLSecurity::SignedDocument.new(@response, @errors)
+        @document = JamesXmlSecurity::SignedDocument.new(@response, @errors)
       end
 
       def is_valid?
