@@ -1,5 +1,5 @@
 module James
   module RubySaml
-    VERSION = '0.91'
+    VERSION = '0.92'
   end
 end
