@@ -31,7 +31,7 @@ require "digest/sha1"
 require "digest/sha2"
 require "james/ruby-saml/validation_error"
 
-module XMLSecurity
+module JamesXMLSecurity
 
   class BaseDocument < REXML::Document
 

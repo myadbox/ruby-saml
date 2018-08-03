@@ -25,7 +25,7 @@ module James
 
         @options = options
         @response = decode_raw_saml(response)
-        @document = XMLSecurity::SignedDocument.new(@response)
+        @document = JamesXMLSecurity::SignedDocument.new(@response)
       end
 
       def validate!

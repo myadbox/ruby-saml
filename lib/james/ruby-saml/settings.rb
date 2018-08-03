@@ -106,8 +106,8 @@ module James
           :logout_requests_signed   => false,
           :logout_responses_signed   => false,
           :embed_sign               => false,
-          :digest_method            => XMLSecurity::Document::SHA1,
-          :signature_method         => XMLSecurity::Document::SHA1
+          :digest_method            => JamesXMLSecurity::Document::SHA1,
+          :signature_method         => JamesXMLSecurity::Document::SHA1
         },
         :double_quote_xml_attribute_values         => false,
       }
