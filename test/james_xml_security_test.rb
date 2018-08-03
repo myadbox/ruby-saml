@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'xml_security'
+require 'james_xml_security'
 
 class JamesXmlSecurityTest < Test::Unit::TestCase
   include JamesXmlSecurity
