@@ -1,4 +1,4 @@
-require "xml_security"
+require "james_xml_security"
 require "time"
 
 module James
